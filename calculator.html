@@ -83,14 +83,14 @@
   <label for="futureHours">Hours Worked (future check):</label>
   <input type="number" id="futureHours" placeholder="e.g. 60" />
 
-  <label for="futureGross">Future Gross Pay ($, optional):</label>
+  <label for="futureGross">Future Gross Pay ($, optional if using gross):</label>
   <input type="number" id="futureGross" placeholder="e.g. 1800" />
 
   <button onclick="calculate()">Estimate Future Check</button>
 
   <div id="result"></div>
 
-  <a href="index.html">← Back to Home</a>
+  <a href="/finance/index.html">← Back to Home</a>
 
   <script>
     function calculate() {
@@ -111,16 +111,16 @@
       let message = "";
 
       if (payType === "gross" && futureGross) {
-        // Calculate effective take-home rate from past gross and past net hours
-        const effectiveRate = pastPay / (pastHours * (pastPay / pastHours)); // stays 1:1 if only hours used
+        // Using gross pay and same effective rate
+        const effectiveRate = pastPay / (pastHours ? pastPay / pastHours * pastHours : pastPay); // fallback
         estimatedFuture = futureGross * effectiveRate;
         const percent = (effectiveRate * 100).toFixed(1);
-        message = `Estimated Next Check (using gross and same effective tax rate): $${estimatedFuture.toFixed(2)}\nEffective take-home rate: ${percent}%`;
+        message = `Estimated Next Check (gross → net): $${estimatedFuture.toFixed(2)}\nEffective take-home rate: ${percent}%`;
       } else {
-        // Net-based calculation (or gross without future gross)
+        // Net pay or gross without future gross
         const hourlyRate = pastPay / pastHours;
         estimatedFuture = hourlyRate * futureHours;
-        message = `Estimated Next Check (using past net or hourly extrapolation): $${estimatedFuture.toFixed(2)}`;
+        message = `Estimated Next Check (hourly-based): $${estimatedFuture.toFixed(2)}`;
       }
 
       resultDiv.style.color = "#000";
