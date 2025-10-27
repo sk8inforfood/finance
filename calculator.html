@@ -1,131 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Take-home Check Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 2rem auto;
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      line-height: 1.5;
-    }
-    h1 {
-      text-align: center;
-      color: #0366d6;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      display: block;
-      width: 100%;
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      background: #0366d6;
-      color: white;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #024fa3;
-    }
-    #result {
-      margin-top: 1.5rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-align: center;
-      white-space: pre-line;
-    }
-    a {
-      display: inline-block;
-      margin-top: 1.5rem;
-      text-align: center;
-      width: 100%;
-      text-decoration: none;
-      color: #0366d6;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Take-home Pay Calculator</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 2rem auto;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    line-height: 1.5;
+}
+h1 { text-align:center; color:#0366d6; }
+label { display:block; margin-top:1rem; font-weight:bold; }
+input, select { width:100%; padding:0.5rem; font-size:1rem; margin-top:0.3rem; border:1px solid #ccc; border-radius:5px; }
+button { display:block; width:100%; margin-top:1.5rem; padding:0.75rem; background:#0366d6; color:white; font-size:1.1rem; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#024fa3; }
+#result { margin-top:1.5rem; font-size:1.2rem; font-weight:bold; text-align:center; white-space:pre-line; }
+a { display:inline-block; margin-top:1.5rem; text-align:center; width:100%; text-decoration:none; color:#0366d6; }
+.summary { background:#f0f4f8; padding:1rem; border-radius:6px; margin-bottom:1rem; }
+</style>
 </head>
 <body>
-  <h1>Take-home Check Calculator</h1>
-  <p>Estimate your next paycheck based on past hours and pay.</p>
+<h1>Take-home Pay Calculator</h1>
 
-  <label for="pastPay">Past Pay Amount ($):</label>
-  <input type="number" id="pastPay" placeholder="e.g. 1450" />
+<div class="summary">
+<h3>How to use:</h3>
+<ul>
+<li>Enter <strong>Past Gross</strong> and/or <strong>Past Net</strong>. You must enter at least one.</li>
+<li>Optionally, enter <strong>Past Hours Worked</strong> and <strong>Future Hours</strong> to calculate future pay.</li>
+<li>You can provide <strong>Optional Tax Rate</strong> if only gross is entered to estimate net.</li>
+<li>You can also enter a <strong>Future Target Pay</strong> instead of future hours to calculate required hours to achieve it.</li>
+<li>Hover over each field for guidance.</li>
+</ul>
+</div>
 
-  <label for="payType">Is this Gross or Net?</label>
-  <select id="payType">
-    <option value="net">Net (after tax)</option>
-    <option value="gross">Gross (before tax)</option>
-  </select>
+<label for="pastGross" title="Enter the gross amount of your previous check (before taxes). Optional if you provide net.">Past Gross ($):</label>
+<input type="number" id="pastGross" placeholder="e.g. 2000">
 
-  <label for="pastHours">Hours Worked (past check):</label>
-  <input type="number" id="pastHours" placeholder="e.g. 80" />
+<label for="pastNet" title="Enter the net amount of your previous check (after taxes). Optional if you provide gross.">Past Net ($):</label>
+<input type="number" id="pastNet" placeholder="e.g. 1500">
 
-  <label for="futureHours">Hours Worked (future check):</label>
-  <input type="number" id="futureHours" placeholder="e.g. 60" />
+<label for="taxRate" title="Optional: Enter the tax rate percentage (e.g., 25) if only gross is entered to estimate net.">Optional Tax Rate (%):</label>
+<input type="number" id="taxRate" placeholder="e.g. 25">
 
-  <label for="futureGross">Future Gross Pay ($, optional if using gross):</label>
-  <input type="number" id="futureGross" placeholder="e.g. 1800" />
+<label for="pastHours" title="Enter hours worked for the past check. Optional if you want hourly calculation.">Past Hours Worked:</label>
+<input type="number" id="pastHours" placeholder="e.g. 80">
 
-  <button onclick="calculate()">Estimate Future Check</button>
+<label for="futureHours" title="Enter hours you plan to work for the future check. Leave blank if providing target pay instead.">Future Hours:</label>
+<input type="number" id="futureHours" placeholder="e.g. 60">
 
-  <div id="result"></div>
+<label for="futureTarget" title="Optional: Enter the target take-home pay for the future. If you leave hours blank, the calculator will estimate required hours.">Future Target Pay ($):</label>
+<input type="number" id="futureTarget" placeholder="e.g. 1800">
 
-  <a href="index.html">← Back to Home</a>
+<button onclick="calculate()">Calculate</button>
 
-  <script>
-    function calculate() {
-      const pastPay = parseFloat(document.getElementById('pastPay').value);
-      const payType = document.getElementById('payType').value;
-      const pastHours = parseFloat(document.getElementById('pastHours').value);
-      const futureHours = parseFloat(document.getElementById('futureHours').value);
-      const futureGross = parseFloat(document.getElementById('futureGross').value);
-      const resultDiv = document.getElementById('result');
+<div id="result"></div>
+<a href="index.html">← Back to Home</a>
 
-      if (!pastPay || !pastHours || !futureHours) {
-        resultDiv.textContent = "Please fill in past pay, past hours, and future hours.";
-        resultDiv.style.color = "red";
+<script>
+function calculate() {
+    const pastGross = parseFloat(document.getElementById('pastGross').value);
+    const pastNet = parseFloat(document.getElementById('pastNet').value);
+    const taxRateInput = parseFloat(document.getElementById('taxRate').value);
+    const pastHours = parseFloat(document.getElementById('pastHours').value);
+    const futureHours = parseFloat(document.getElementById('futureHours').value);
+    const futureTarget = parseFloat(document.getElementById('futureTarget').value);
+    const resultDiv = document.getElementById('result');
+
+    if (!pastGross && !pastNet) {
+        resultDiv.textContent = "Please enter at least Past Gross or Past Net.";
+        resultDiv.style.color="red";
         return;
-      }
-
-      let estimatedFuture = 0;
-      let message = "";
-
-      if (payType === "gross" && futureGross) {
-        // Gross pay → net calculation
-        const effectiveRate = pastPay / pastPay; // simple placeholder for consistency
-        estimatedFuture = futureGross * effectiveRate;
-        const percent = (effectiveRate * 100).toFixed(1);
-        message = `Estimated Next Check (gross → net): $${estimatedFuture.toFixed(2)}\nEffective take-home rate: ${percent}%`;
-      } else {
-        // Net pay or gross without future gross
-        const hourlyRate = pastPay / pastHours;
-        estimatedFuture = hourlyRate * futureHours;
-        message = `Estimated Next Check (hourly-based): $${estimatedFuture.toFixed(2)}`;
-      }
-
-      resultDiv.style.color = "#000";
-      resultDiv.textContent = message;
     }
-  </script>
+
+    // Determine effective tax rate
+    let effectiveTaxRate;
+    if (pastGross && pastNet) {
+        effectiveTaxRate = 1 - (pastNet / pastGross);
+    } else if (pastGross && taxRateInput) {
+        effectiveTaxRate = taxRateInput/100;
+    } else if (pastGross) {
+        effectiveTaxRate = 0.25; // default 25%
+    } else if (pastNet) {
+        effectiveTaxRate = 0; // net only, assume 0 for calculation
+    }
+
+    let hourlyRate = 0;
+    if (pastHours) {
+        if (pastNet) {
+            hourlyRate = pastNet / pastHours;
+        } else if (pastGross) {
+            hourlyRate = (pastGross * (1 - effectiveTaxRate)) / pastHours;
+        }
+    }
+
+    let messages = [];
+
+    // Scenario 1: future hours provided
+    if (futureHours) {
+        let futurePay;
+        if (hourlyRate > 0) {
+            futurePay = hourlyRate * futureHours;
+            messages.push(`Estimated Future Pay for ${futureHours} hours: $${futurePay.toFixed(2)}`);
+        } else if (pastGross && pastNet) {
+            // no hours, use gross/net ratio
+            let ratio = pastNet / pastGross;
+            futurePay = futureHours * (pastGross/pastHours)*ratio;
+            messages.push(`Estimated Future Pay for ${futureHours} hours: $${futurePay.toFixed(2)}`);
+        } else {
+            messages.push("Not enough data to estimate future pay with hours.");
+        }
+    }
+
+    // Scenario 2: future target provided, estimate hours
+    if (futureTarget && !futureHours) {
+        if (hourlyRate > 0) {
+            let requiredHours = futureTarget / hourlyRate;
+            messages.push(`To achieve target pay $${futureTarget.toFixed(2)}, you need to work ${requiredHours.toFixed(2)} hours.`);
+        } else if (pastGross && pastNet && pastHours) {
+            let ratio = pastNet / pastGross;
+            let grossHourly = pastGross / pastHours;
+            let requiredHours = futureTarget / (grossHourly * ratio);
+            messages.push(`To achieve target pay $${futureTarget.toFixed(2)}, you need to work ${requiredHours.toFixed(2)} hours.`);
+        } else {
+            messages.push("Not enough data to estimate hours for target pay.");
+        }
+    }
+
+    // Scenario 3: calculate implied tax rate if both gross and net provided
+    if (pastGross && pastNet) {
+        messages.push(`Calculated effective tax rate from past pay: ${(effectiveTaxRate*100).toFixed(1)}%`);
+    }
+
+    resultDiv.style.color="#000";
+    resultDiv.textContent = messages.join("\n");
+}
+</script>
 </body>
 </html>
