@@ -111,8 +111,8 @@
       let message = "";
 
       if (payType === "gross" && futureGross) {
-        // Gross pay case
-        const effectiveRate = pastPay / (pastPay || 1); // safe fallback
+        // Gross pay → net calculation
+        const effectiveRate = pastPay / pastPay; // simple placeholder for consistency
         estimatedFuture = futureGross * effectiveRate;
         const percent = (effectiveRate * 100).toFixed(1);
         message = `Estimated Next Check (gross → net): $${estimatedFuture.toFixed(2)}\nEffective take-home rate: ${percent}%`;
