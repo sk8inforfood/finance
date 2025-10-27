@@ -90,7 +90,7 @@
 
   <div id="result"></div>
 
-  <a href="/finance/index.html">← Back to Home</a>
+  <a href="index.html">← Back to Home</a>
 
   <script>
     function calculate() {
@@ -111,8 +111,8 @@
       let message = "";
 
       if (payType === "gross" && futureGross) {
-        // Using gross pay and same effective rate
-        const effectiveRate = pastPay / (pastHours ? pastPay / pastHours * pastHours : pastPay); // fallback
+        // Gross pay case
+        const effectiveRate = pastPay / (pastPay || 1); // safe fallback
         estimatedFuture = futureGross * effectiveRate;
         const percent = (effectiveRate * 100).toFixed(1);
         message = `Estimated Next Check (gross → net): $${estimatedFuture.toFixed(2)}\nEffective take-home rate: ${percent}%`;
